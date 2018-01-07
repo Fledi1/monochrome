@@ -6,4 +6,4 @@
 
 ## License
 
-[CC0 1.0 (Public Domain)](LICENSE.md)
+[GNU General Public License v3.0](LICENSE.md)
