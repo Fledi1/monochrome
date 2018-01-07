@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>WebGL Test</title>
+    <link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <!--Script Imports-->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="./node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script type="text/javascript" src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>if (window.module) module = window.module;</script>
+    <!--End Script Imports-->
+  </head>
+  <body id="body">
+
+
+    <div id="container" class="container-fluid">
+      <div class="row">
+        <div id="sidebar" class="col-sm-3">
+          <!--Sidebar-->
+            <p id="lbl_rvalue"></p>
+              <input class="slider" id="slider_r" type="range" min="-256" max="256" step="0.01" value="0.0" oninput="updateImage(true);" onchange="updateImage(false)" ondblclick="this.value = 0.0; updateImage(false)">
+
+              <p id="lbl_gvalue"></p>
+              <input class="slider" id="slider_g" type="range" min="0" max="2" step="0.01" value="1.0" oninput="updateImage(true);" onchange="updateImage(false)" ondblclick="this.value = 1.0; updateImage(false)">
+
+              <p id="lbl_bvalue"></p>
+              <input class="slider" id="slider_b" type="range" min="-1" max="1" step="0.01" value="0.0" oninput="updateImage(true);" onchange="updateImage(false)" ondblclick="this.value = 0.0; updateImage(false)">
+
+              <br><br>
+              <button type="button" class="btn btn-default" onclick="saveImage('shrek');">Save</button>
+              <button type="button" class="btn btn-default" onclick="openImageDialog();">Open</button>
+              <br><br>
+              <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-default" data-toggle="popover" data-content="Shows the input image without any effects"
+                        onclick="setUnedited(true);" oncontextmenu="setElementPopover(this,true);">Unedited</button>
+
+                <button type="button" class="btn btn-default" onclick="setUnedited(false);">Edited</button>
+              </div>
+
+              <!--End Sidebar-->
+        </div>
+        <div id="mainwindow" class="col-sm-9">
+          <!--Main Window-->
+          <div class="page-header">
+            <h1 class="text-capitalize">Monochrome</h1>
+          </div>
+
+          <canvas id="canvas"></canvas>
+          <!--End Main Window-->
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+
+      // You can also require other files to run in this process
+      const renderer = require('./renderer.js')
+
+      //Init Popovers
+      $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+          placement: 'top',
+          trigger: 'manual'
+        })
+        //Initialize Slider Labels
+        updateImage(true);
+      });
+
+
+
+      function setElementPopover(elm, value, delay = 2800){
+        if(value == true){
+          $(elm).popover('show');
+          setTimeout(function(){setElementPopover(elm, false);},delay);
+        }else{
+          $(elm).popover('hide');
+        }
+      }
+
+      function openImageDialog(){
+        renderer.openImageDialog();
+      }
+
+      function setUnedited(value){
+        renderer.setUnedited(value);
+        updateImage(false);
+      }
+
+      function updateImage(askTime){
+          document.getElementById('lbl_rvalue').innerHTML = "Contrast: " + document.getElementById('slider_r').value;
+          document.getElementById('lbl_gvalue').innerHTML = "Mult. Brightness: " + document.getElementById('slider_g').value;
+          document.getElementById('lbl_bvalue').innerHTML = "Add. Brightness: " + document.getElementById('slider_b').value;
+          renderer.updateImage(askTime);
+      }
+
+      function saveImage(filename){
+          renderer.saveImage(filename);
+      }
+
+      //Init Sliders
+      updateImage(false);
+
+    </script>
+  </body>
+</html>

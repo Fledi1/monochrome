@@ -1,0 +1,52 @@
+:root {
+  -webkit-user-select:none;
+}
+
+/*h1 {
+  font-family: 'Raleway', sans-serif;
+  margin: 0px;
+  color: #CACACA;
+}
+
+h4 {
+  font-family: 'Raleway', sans-serif;
+  margin: 0px;
+  color: #CACACA;
+}
+
+h6 {
+  font-family: 'Cutive Mono', monospace;
+  margin: 0px;
+  color: #CACACA;
+}*/
+
+p {
+  /*font-family: 'Cutive Mono', monospace;*/
+  color: #CACACA;
+}
+
+body {
+  background-color: #6A6A6A;
+}
+
+html, body, #container, .row {
+  height: 100%;
+}
+
+.slider {
+  width: 100%;
+}
+
+#sidebar {
+  background-color: #333333;
+  padding: 20px;
+  height: 100%;
+}
+
+#mainwindow {
+
+}
+
+#canvas {
+  width: 100%;
+}
