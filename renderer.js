@@ -17,7 +17,9 @@ const {PNG} = require('pngjs');
 const remote = require('electron').remote;
 const dialog = remote.dialog;
 
+
 var unedited = false;
+var color = false;
 
 var gl;
 var program;
@@ -33,6 +35,7 @@ var texture;
 var resolutionLocation;
 var slider_rgbLocation;
 var uneditedLocation;
+var colorLocation;
 
 var lastUpdate = 0;
 var intervalInMs = 33;
@@ -85,13 +88,22 @@ function main(src) {
   }
 }
 
-function render(image) {
+function render(image, downscale) {
 // Get A WebGL context
 /** @type {HTMLCanvasElement} */
 var canvas = document.getElementById("canvas");
-canvas.width = image.width;
-canvas.height = image.height;
-gl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
+console.log(downscale);
+if(true){
+  canvas.width = image.width;
+  canvas.height = image.height;
+}else {
+  image.width = canvas.width;
+}
+
+gl = canvas.getContext("webgl", {
+  preserveDrawingBuffer: true,
+  antialias: true
+});
 if (!gl) {
   return;
 }
@@ -155,6 +167,7 @@ gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 resolutionLocation = gl.getUniformLocation(program, "u_resolution");
 slider_rgbLocation = gl.getUniformLocation(program, "slider_rgb");
 uneditedLocation = gl.getUniformLocation(program, "unedited");
+colorLocation = gl.getUniformLocation(program, "color");
 
 //webglUtils.resizeCanvasToDisplaySize(gl.canvas);
 
@@ -172,6 +185,10 @@ function updateImage(askTime){
   if(lastUpdate + intervalInMs > now && askTime == true)  return;
   //else
   lastUpdate = now;
+
+  //If gl is not defined, don't try to access it
+  if(!gl)
+    return;
 
   // Clear the canvas
   gl.clearColor(0, 0, 0, 0);
@@ -214,7 +231,7 @@ function updateImage(askTime){
   gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
   gl.uniform3f(slider_rgbLocation, document.getElementById('slider_r').value, document.getElementById('slider_g').value, document.getElementById('slider_b').value);
   gl.uniform1f(uneditedLocation, unedited);
-
+  gl.uniform1f(colorLocation, color);
 
 
   // Draw the rectangle.
@@ -237,6 +254,8 @@ function updateImage(askTime){
      x2, y1,
      x2, y2,
   ]), gl.STATIC_DRAW);
+
+
 }
 
 module.exports.openImageDialog = function(){
@@ -245,6 +264,10 @@ module.exports.openImageDialog = function(){
 
 module.exports.setUnedited = function(value){
   unedited = value;
+}
+
+module.exports.setColor = function(value){
+  color = value;
 }
 
 module.exports.updateImage = function(askTime){

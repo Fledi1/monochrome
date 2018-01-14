@@ -22,7 +22,7 @@ h6 {
 
 p {
   /*font-family: 'Cutive Mono', monospace;*/
-  color: #CACACA;
+  color: #000000;
 }
 
 body {
@@ -34,13 +34,70 @@ html, body, #container, .row {
 }
 
 .slider {
+  /*margin-left: 43px;
+  margin-right: 48px;*/
   width: 100%;
+}
+
+.labeltype {
+  margin: 0px;
+  text-align: left;
+  font-size: 0.7vw;
+  vertical-align: bottom;
+}
+
+.labelvalue {
+  margin: 0px;
+  text-align: center;
+  font-size: 0.7vw;
+  vertical-align: bottom;
+}
+
+.panel-group {
+}
+
+.panel-heading {
+  background-color: #6A6A6A;
+  padding: 10px;
+  border: 2px solid #C0C0C0;
+  border-top: 0px;
+}
+
+.panel-heading:hover {
+  background-color: #999999;
+}
+
+#topHeading {
+  border-top: 2px solid #C0C0C0;
+}
+
+.panel-body {
+  background-color: #C0C0C0;
+  padding: 10px;
+  border: 2px solid #C0C0C0;
+  border-top: 0px;
+  width: 100%;
+}
+
+.panel-title {
+  margin: 0px;
+}
+
+.accordionheader {
+  color: #000000;
+}
+
+.accordionheader:hover {
+  text-decoration: none;
+  color: #333333;
 }
 
 #sidebar {
   background-color: #333333;
   padding: 20px;
   height: 100%;
+  min-width: 350px;
+  resize: both;
 }
 
 #mainwindow {
@@ -48,5 +105,7 @@ html, body, #container, .row {
 }
 
 #canvas {
+  -ms-interpolation-mode: bicubic;
   width: 100%;
+  /*border: 20px solid #FFFFFF;*/
 }
