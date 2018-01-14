@@ -13,7 +13,13 @@
     <script type="text/javascript" src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <script>if (window.module) module = window.module;</script>
+
+    <script type="text/javascript" src="./customelements.js"></script>
     <!--End Script Imports-->
+    <script>
+      // You can also require other files to run in this process
+      const renderer = require('./renderer.js')
+    </script>
   </head>
   <body id="body">
 
@@ -22,6 +28,7 @@
       <div class="row">
         <div id="sidebar" class="col-sm-3">
           <!--Sidebar-->
+          <cust-slider type="Contrast" min="-100" max="100" step="0.1" initvalue="0"></cust-slider>
           <!--Accordion-->
           <div class="panel-group" id="accordion">
             <!--Contrast-->
@@ -114,10 +121,6 @@
     </div>
 
     <script>
-
-      // You can also require other files to run in this process
-      const renderer = require('./renderer.js')
-
       //Init Popovers
       $(document).ready(function(){
         $('[data-toggle="popover"]').popover({
