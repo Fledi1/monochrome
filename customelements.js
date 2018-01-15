@@ -1,12 +1,12 @@
 //const renderer = require('./renderer.js');
 
-class Slider extends HTMLElement {
+class PropertySlider extends HTMLElement {
 
   constructor(){
     super();
   }
 
-connectedCallback(){
+connectedCallback() {
   var conflu = document.createElement('div');
   conflu.className = 'container-fluid';
   this.appendChild(conflu);
@@ -33,22 +33,25 @@ connectedCallback(){
   inp.max = this.getAttribute('max');
   inp.step = this.getAttribute('step');
   inp.value = this.getAttribute('initvalue')
-  inp.ondblclick = function(){
-    //inp.setAttribute('value',''+this.getAttribute('initvalue'));
-    console.log(this.initialvalue);
-    inp.value = this.getAttribute('initialvalue');
-  };
-  inp.oninput = function(){
+  inp.ondblclick = (function(){
+    console.log(this.getAttribute('initvalue'));
+    lblvalue.innerHTML = this.getAttribute('initvalue');
+    this.setAttribute('value', ''+this.getAttribute('initvalue'));
+    inp.value = this.getAttribute('initvalue');
+    updateImage(true);
+  }).bind(this);
+
+  inp.oninput = (function(){
     lblvalue.innerHTML = inp.value;
     this.setAttribute('value', ''+inp.value);
     updateImage(true);
-  };
-  inp.onchange = function(){
+  }).bind(this);
+  inp.onchange = (function(){
     lblvalue.innerHTML = inp.value;
     console.log(inp.value);
     this.setAttribute('value', inp.value);
     updateImage(false);
-  };
+  }).bind(this);
   col2.appendChild(inp);
 
   var col3 = document.createElement('div');
@@ -68,4 +71,4 @@ connectedCallback(){
 }
 
 // Define the new element
-customElements.define('cust-slider', Slider);
+customElements.define('prop-slider', PropertySlider);
