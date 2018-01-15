@@ -33,27 +33,30 @@ html, body, #container, .row {
   height: 100%;
 }
 
-.slider {
+/* .slider {
   /*margin-left: 43px;
-  margin-right: 48px;*/
+  margin-right: 48px;
   width: 100%;
 }
 
 .labeltype {
   margin: 0px;
-  text-align: left;
+  /*text-align: left;
   font-size: 0.7vw;
   vertical-align: bottom;
 }
 
 .labelvalue {
   margin: 0px;
-  text-align: center;
+  /*text-align: center;
   font-size: 0.7vw;
   vertical-align: bottom;
-}
+} */
 
 .panel-group {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
 }
 
 .panel-heading {
@@ -77,6 +80,7 @@ html, body, #container, .row {
   border: 2px solid #C0C0C0;
   border-top: 0px;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .panel-title {
@@ -96,8 +100,9 @@ html, body, #container, .row {
   background-color: #333333;
   padding: 20px;
   height: 100%;
-  min-width: 350px;
-  resize: both;
+  width: 25%;
+  /*min-width: 350px;*/
+  resize: horizontal;
 }
 
 #mainwindow {

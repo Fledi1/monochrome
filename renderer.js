@@ -224,8 +224,7 @@ function updateImage(askTime){
 
   // set uniforms
   gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-  console.log(document.getElementById('slider_r').getAttribute('value'));
-  gl.uniform3f(slider_rgbLocation, document.getElementById('slider_r').getAttribute('value'), document.getElementById('slider_g').getAttribute('value'), document.getElementById('slider_b').value);
+  gl.uniform3f(slider_rgbLocation, document.getElementById('slider_r').getAttribute('value'), document.getElementById('slider_g').getAttribute('value'), document.getElementById('slider_b').getAttribute('value'));
   gl.uniform1f(uneditedLocation, unedited);
   gl.uniform1f(colorLocation, color);
 
