@@ -26,9 +26,8 @@
 
     <div id="container" class="container-fluid">
       <div class="row">
-        <div id="sidebar" class="col-sm-3">
+        <div id="sidebar" class="col-3#">
           <!--Sidebar-->
-          <prop-slider type="Contrast" min="-100" max="100" step="0.1" initvalue="0"></prop-slider>
           <!--Accordion-->
           <div class="panel-group" id="accordion">
             <!--Contrast-->
@@ -40,13 +39,14 @@
               </div>
               <div id="collapse1" class="panel-collapse collapse">
                 <div class="panel-body">
-                  <div class="container-fluid">
+                  <!--div class="container-fluid">
                     <div class="row">
                       <div class="col-sm-2"><p class="labeltype">Contrast</p></div>
                       <div class="col-sm-8"><input class="slider" id="slider_r" type="range" min="-256" max="256" step="0.01" value="0.0" oninput="updateImage(true);" onchange="updateImage(false)" ondblclick="this.value = 0.0; updateImage(false)"></div>
                       <div class="col-sm-2"><p class="labelvalue" id="lbl_rvalue"></p></div>
                     </div>
-                  </div>
+                  </div-->
+                  <prop-slider id="slider_r" type="Contrast" min="-100" max="100" step="0.1" initvalue="0" value="0.0"></prop-slider>
                 </div>
               </div>
             </div>
@@ -60,8 +60,9 @@
               </div>
               <div id="collapse2" class="panel-collapse collapse">
                 <div class="panel-body">
-                  <p id="lbl_gvalue"></p>
-                  <input class="slider" id="slider_g" type="range" min="0" max="2" step="0.01" value="1.0" oninput="updateImage(true);" onchange="updateImage(false)" ondblclick="this.value = 1.0; updateImage(false)">
+                  <!--p id="lbl_gvalue"></p>
+                  <input class="slider" id="slider_g" type="range" min="0" max="2" step="0.01" value="1.0" oninput="updateImage(true);" onchange="updateImage(false)" ondblclick="this.value = 1.0; updateImage(false)"-->
+                  <prop-slider id="slider_g" type="Mult. Brightness" min="-100" max="100" step="0.1" initvalue="0" value="0.0"></prop-slider>
                 </div>
               </div>
             </div>
@@ -107,7 +108,7 @@
 
               <!--End Sidebar-->
         </div>
-        <div id="mainwindow" class="col-sm-9">
+        <div id="mainwindow" class="col">
           <!--Main Window-->
           <div class="page-header">
             <h1 class="text-capitalize">Monochrome</h1>
@@ -157,8 +158,8 @@
       }
 
       function updateImage(askTime){
-          document.getElementById('lbl_rvalue').innerHTML = "" + document.getElementById('slider_r').value;
-          document.getElementById('lbl_gvalue').innerHTML = "Mult. Brightness: " + document.getElementById('slider_g').value;
+          //document.getElementById('lbl_rvalue').innerHTML = "" + document.getElementById('slider_r').value;
+          //document.getElementById('lbl_gvalue').innerHTML = "Mult. Brightness: " + document.getElementById('slider_g').value;
           document.getElementById('lbl_bvalue').innerHTML = "Add. Brightness: " + document.getElementById('slider_b').value;
           renderer.updateImage(askTime);
       }

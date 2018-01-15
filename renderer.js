@@ -88,17 +88,12 @@ function main(src) {
   }
 }
 
-function render(image, downscale) {
+function render(image) {
 // Get A WebGL context
 /** @type {HTMLCanvasElement} */
 var canvas = document.getElementById("canvas");
-console.log(downscale);
-if(true){
-  canvas.width = image.width;
-  canvas.height = image.height;
-}else {
-  image.width = canvas.width;
-}
+canvas.width = image.width;
+canvas.height = image.height;
 
 gl = canvas.getContext("webgl", {
   preserveDrawingBuffer: true,
@@ -229,7 +224,8 @@ function updateImage(askTime){
 
   // set uniforms
   gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-  gl.uniform3f(slider_rgbLocation, document.getElementById('slider_r').value, document.getElementById('slider_g').value, document.getElementById('slider_b').value);
+  console.log(document.getElementById('slider_r').getAttribute('value'));
+  gl.uniform3f(slider_rgbLocation, document.getElementById('slider_r').getAttribute('value'), document.getElementById('slider_g').getAttribute('value'), document.getElementById('slider_b').value);
   gl.uniform1f(uneditedLocation, unedited);
   gl.uniform1f(colorLocation, color);
 

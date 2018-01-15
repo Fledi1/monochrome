@@ -105,7 +105,6 @@ html, body, #container, .row {
 }
 
 #canvas {
-  -ms-interpolation-mode: bicubic;
   width: 100%;
   /*border: 20px solid #FFFFFF;*/
 }
