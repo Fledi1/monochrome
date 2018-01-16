@@ -17,6 +17,8 @@ const {PNG} = require('pngjs');
 const remote = require('electron').remote;
 const dialog = remote.dialog;
 
+var currentImagePath = "image";
+
 
 var unedited = false;
 var color = false;
@@ -254,7 +256,23 @@ function updateImage(askTime){
 }
 
 module.exports.openImageDialog = function(){
-  main(dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']}));
+  let pathToOpen = dialog.showOpenDialog({properties: ['openFile']});
+  currentImagePath = pathToOpen[0];
+  main(pathToOpen);
+}
+
+module.exports.saveImageDialog = function(){
+  console.log(currentImagePath);
+  let newName = currentImagePath.substring(currentImagePath.lastIndexOf('/')+1,currentImagePath.lastIndexOf('.'));
+  console.log(newName);
+  saveImage(dialog.showSaveDialog({title: "Save Image", defaultPath: newName, filters: [{
+      name: 'JPG',
+      extensions: ['jpg']
+    },
+    {
+      name: 'Adobe PDF',
+      extensions: ['pdf']
+    }]}));
 }
 
 module.exports.setUnedited = function(value){
@@ -273,12 +291,15 @@ module.exports.saveImage = function(filename){
   saveImage(filename);
 }
 
-function saveImage(filename){
-  console.log('saved!');
+function saveImage(path){
+
+  if(!path.includes('.png')){
+    path += ".png";
+  }
 
   var buffer = canvasBuffer(document.getElementById('canvas'), 'image/png');
 
-  fs.writeFile(filename + '.png', buffer, {flag: 'w'}, function(err){
+  fs.writeFile(path, buffer, {flag: 'w'}, function(err){
     throw err;
   });
 }
