@@ -11,8 +11,11 @@ uniform bool color;
 varying vec2 v_texCoord;
 
 void contrast(inout float var, float value);
+void pcontrast(inout vec4 var, float value);
 void addBrightness(inout float var, float value);
 void multBrightness(inout float var, float value);
+void RGBtoHSV(inout vec4 var);
+void HSVtoRGB(inout vec4 var);
 
 void main() {
    vec4 incol = texture2D(u_image, v_texCoord).rgba;
@@ -26,9 +29,9 @@ void main() {
    addBrightness(col.g, slider_rgb.b);
    addBrightness(col.b, slider_rgb.b);
    //Multiplicative Brightness
-   multBrightness(col.r, slider_rgb.g);
-   multBrightness(col.g, slider_rgb.g);
-   multBrightness(col.b, slider_rgb.g);
+   //multBrightness(col.r, slider_rgb.g);
+   //multBrightness(col.g, slider_rgb.g);
+   //multBrightness(col.b, slider_rgb.g);
    //Multiplicative Contrast
    // if(b<0.5){
    //   b *= (1.0-slider_rgb.r);
@@ -41,10 +44,13 @@ void main() {
    // }else{
    //   b += slider_rgb.r;
    // }
+
    //Propper Contrast
-   contrast(col.r, slider_rgb.r);
-   contrast(col.g, slider_rgb.r);
-   contrast(col.b, slider_rgb.r);
+   pcontrast(col,slider_rgb.r);
+   contrast(col.r, slider_rgb.g);
+   contrast(col.g, slider_rgb.g);
+   contrast(col.b, slider_rgb.g);
+
 
    if(!unedited){
      if(!color){
@@ -65,6 +71,12 @@ void main() {
 
 }
 
+void pcontrast(inout vec4 var, float value){
+  RGBtoHSV(var);
+  var.z = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var.z*255.0) - 128.0  ) + 128.0 )/255.0;
+  HSVtoRGB(var);
+}
+
 void contrast(inout float var, float value){
   var = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var*255.0) - 128.0  ) + 128.0 )/255.0;
 }
@@ -73,6 +85,63 @@ void addBrightness(inout float var, float value){
 }
 void multBrightness(inout float var, float value){
   var *= value;
+}
+
+//Color space conversions
+void RGBtoHSV(inout vec4 var){
+  //https://www.rapidtables.com/convert/color/rgb-to-hsv.html
+  float cmax = max(var.x,max(var.y,var.z));
+  float cmin = min(var.x,min(var.y,var.z));
+  float delta = cmax - cmin;
+
+  //Hue
+  float hue;
+  if(delta == 0.0){
+    hue = 0.0;
+  }else if (cmax == var.x){
+    hue = 60.0 * mod((var.y-var.z)/delta,6.0);
+  }else if (cmax == var.y){
+    hue = 60.0 * ((var.z-var.x)/delta+2.0);
+  }else if (cmax == var.z){
+    hue = 60.0 * ((var.x-var.y)/delta+4.0);
+  }
+
+  float saturation;
+  if(cmax == 0.0){
+    saturation = 0.0;
+  }else {
+    saturation = delta/cmax;
+  }
+
+  float value = cmax;
+
+  var = vec4(hue,saturation,value,var.w);
+}
+
+void HSVtoRGB(inout vec4 var){
+  //https://www.rapidtables.com/convert/color/hsv-to-rgb.html
+  float c = var.z * var.y;
+  float x = c*(1.0-abs(mod(var.x/60.0,2.0)-1.0));
+  float m = var.z -c;
+
+  vec3 rgb;
+
+
+  if(var.x >= 0.0 && var.x < 60.0){
+    rgb = vec3(c,x,0.0);
+  }else if(var.x >= 60.0 && var.x < 120.0){
+    rgb = vec3(x,c,0.0);
+  }else if(var.x >= 120.0 && var.x < 180.0){
+    rgb = vec3(0.0,c,x);
+  }else if(var.x >= 180.0 && var.x < 240.0){
+    rgb = vec3(0.0,x,c);
+  }else if(var.x >= 240.0 && var.x < 300.0){
+    rgb = vec3(x,0.0,c);
+  }else if(var.x >= 300.0 && var.x < 360.0){
+    rgb = vec3(c,0.0,x);
+  }
+
+  var = vec4(rgb.x+m,rgb.y+m,rgb.z+m,var.w);
 }
 
 `;
