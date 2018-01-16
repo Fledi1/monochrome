@@ -39,7 +39,7 @@
               </div>
               <div id="collapse1" class="panel-collapse collapse">
                 <div class="panel-body">
-                  <prop-slider id="slider_r" type="Contrast" min="-100" max="100" step="0.1" initvalue="0" value="0.0"></prop-slider>
+                  <prop-slider id="slider_r" type="Contrast" min="-255" max="255" step="0.1" initvalue="0" value="0.0"></prop-slider>
                 </div>
               </div>
             </div>
@@ -78,7 +78,7 @@
 
 
               <br><br>
-              <button type="button" class="btn btn-default" onclick="saveImage('shrek');">Save</button>
+              <button type="button" class="btn btn-default" onclick="saveImageDialog();">Save</button>
               <button type="button" class="btn btn-default" onclick="openImageDialog();">Open</button>
               <br><br>
               <div class="btn-group btn-group-sm">
@@ -135,6 +135,10 @@
 
       function openImageDialog(){
         renderer.openImageDialog();
+      }
+
+      function saveImageDialog(){
+        renderer.saveImageDialog();
       }
 
       function setUnedited(value){
