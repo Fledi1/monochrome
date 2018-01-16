@@ -23,6 +23,7 @@ h6 {
 p {
   /*font-family: 'Cutive Mono', monospace;*/
   color: #000000;
+  margin: 0px;
 }
 
 body {
@@ -52,6 +53,19 @@ html, body, #container, .row {
   font-size: 0.7vw;
   vertical-align: bottom;
 } */
+
+/* #open_dropdown {
+  margin-left: 15vw;
+} */
+
+#panel-body4 {
+  height: 12vh;
+}
+
+.dropdown.show {
+  position: absolute;
+  z-index: 10;
+}
 
 .panel-group {
   width: 100%;
@@ -95,6 +109,7 @@ html, body, #container, .row {
   text-decoration: none;
   color: #333333;
 }
+
 
 #sidebar {
   background-color: #333333;

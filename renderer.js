@@ -42,51 +42,44 @@ var colorLocation;
 var lastUpdate = 0;
 var intervalInMs = 33;
 
-function main(src) {
+function main(src, filetype) {
 
   var image = document.createElement('img');
 
+  if(filetype == 'jpgpng'){
+    image.src = src;
+    image.onload = function() {
+      render(image);
+    }
+  }else if (filetype == 'raw'){
+    //https://www.npmjs.com/package/dcraw
+    //dcraw Test
+    fs.readFile(src, (err,readdata) =>{
+      if(err) throw err;
+      var imarr = dcraw(readdata, {verbose:true, exportAsTiff:true});
+      const {width, height, data} = decode(imarr);
+      const png = new PNG({width, height});
+      png.data = data;
 
+      var blob = new Blob([PNG.sync.write(png)],{'type': 'image/png'});
+      var url = URL.createObjectURL(blob);
+      image.src = url;
+      image.onload = function() {
+        render(image);
+      }
+    });
+  }else if (filetype == 'tiff'){
+    let imarr = fs.readFileSync(src);
+    const {width, height, data} = decode(imarr);
+    const png = new PNG({width, height});
+    png.data = data;
 
-  //dcraw Test
-  /*var buf = fs.readFileSync("/Volumes/Data/Photos/2017/Dezember/Import 06/_DSF1288.RAF");
-
-  //https://www.npmjs.com/package/dcraw
-  var imarr = dcraw(buf, {verbose:true, exportAsTiff:true});
-  //var imarr = dcraw(buf, {verbose:true, extractThumbnail: true});
-
-  //console.log(imarr);
-
-  //fs.writeFile('./output.tiff', imarr, {flag: 'w'}, function(err){
-  //  if(err)
-  //     throw err;
-  //});
-
-  //imarr = dcraw(buf, {verbose:true, extractThumbnail: true});
-
-  //console.log(imarr);
-
-
-  //var base64Data = btoa(String.fromCharCode.apply(null, imarr));
-  //image.src = 'data:image/png;base64,' + base64Data;
-
-  //var blob = new Blob([imarr], {'type': 'image/tiff'});
-  //var url = URL.createObjectURL(blob);
-  //image.src = url;
-
-  const {width, height, data} = decode(imarr);
-  const png = new PNG({width, height});
-  png.data = data;
-
-  var blob = new Blob([PNG.sync.write(png)],{'type': 'image/png'});
-  var url = URL.createObjectURL(blob);
-
-  //var image = new Image();
-  image.src = url;*/
-  image.src = src;
-
-  image.onload = function() {
-    render(image);
+    var blob = new Blob([PNG.sync.write(png)],{'type': 'image/png'});
+    var url = URL.createObjectURL(blob);
+    image.src = url;
+    image.onload = function() {
+      render(image);
+    }
   }
 }
 
@@ -255,24 +248,31 @@ function updateImage(askTime){
 
 }
 
-module.exports.openImageDialog = function(){
+module.exports.openImageDialog = function(filetype){
+  console.log("should open " + filetype + " file");
   let pathToOpen = dialog.showOpenDialog({properties: ['openFile']});
   currentImagePath = pathToOpen[0];
-  main(pathToOpen);
+  main(pathToOpen[0], filetype);
 }
 
-module.exports.saveImageDialog = function(){
+module.exports.saveImageDialog = function(filetype){
+  console.log("should save as " + filetype);
   console.log(currentImagePath);
   let newName = currentImagePath.substring(currentImagePath.lastIndexOf('/')+1,currentImagePath.lastIndexOf('.'));
+  newName += '.' + filetype;
   console.log(newName);
-  saveImage(dialog.showSaveDialog({title: "Save Image", defaultPath: newName, filters: [{
-      name: 'JPG',
-      extensions: ['jpg']
-    },
-    {
-      name: 'Adobe PDF',
-      extensions: ['pdf']
-    }]}));
+  let path = dialog.showSaveDialog({title: "Save Image", defaultPath: newName});
+
+  let buffer;
+  if(filetype =='png'){
+    buffer = canvasBuffer(document.getElementById('canvas'), 'image/png');
+  }else if(filetype =='jpg'){
+    buffer = canvasBuffer(document.getElementById('canvas'), 'image/jpeg');
+  }
+
+  fs.writeFile(path, buffer, {flag: 'w'}, function(err){
+    throw err;
+  });
 }
 
 module.exports.setUnedited = function(value){
@@ -285,21 +285,4 @@ module.exports.setColor = function(value){
 
 module.exports.updateImage = function(askTime){
   updateImage(askTime);
-}
-
-module.exports.saveImage = function(filename){
-  saveImage(filename);
-}
-
-function saveImage(path){
-
-  if(!path.includes('.png')){
-    path += ".png";
-  }
-
-  var buffer = canvasBuffer(document.getElementById('canvas'), 'image/png');
-
-  fs.writeFile(path, buffer, {flag: 'w'}, function(err){
-    throw err;
-  });
 }
