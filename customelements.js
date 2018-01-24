@@ -23,7 +23,7 @@ connectedCallback() {
   //col1.className = "table-cell";
   col1.style.padding = "0px 10px 0px 0px";
   col1.style.cssFloat = "left";
-  col1.style.width = "6em";
+  col1.style.width = "7em";
   col1.style.display = "table-cell";
   row.appendChild(col1);
   var lbltype = document.createElement('p');

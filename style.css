@@ -126,5 +126,6 @@ html, body, #container, .row {
 
 #canvas {
   width: 100%;
+  /*image-rendering: smooth;
   /*border: 20px solid #FFFFFF;*/
 }

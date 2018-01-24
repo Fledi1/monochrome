@@ -35,7 +35,13 @@ var texture;
 
 //Uniform loactions
 var resolutionLocation;
-var slider_rgbLocation;
+
+var slider_lightnesscontrastLocation;
+var slider_regularcontrastLocation;
+var slider_multbrightLocation;
+var slider_addbrightLocation;
+
+
 var uneditedLocation;
 var colorLocation;
 
@@ -84,6 +90,8 @@ function main(src, filetype) {
 }
 
 function render(image) {
+
+
 // Get A WebGL context
 /** @type {HTMLCanvasElement} */
 var canvas = document.getElementById("canvas");
@@ -155,7 +163,12 @@ gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
 // lookup uniforms
 resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-slider_rgbLocation = gl.getUniformLocation(program, "slider_rgb");
+
+slider_lightnesscontrastLocation = gl.getUniformLocation(program, "value_lightnesscontrast");
+slider_regularcontrastLocation = gl.getUniformLocation(program, "value_regularcontrast");
+slider_multbrightLocation = gl.getUniformLocation(program, "value_multbright");
+slider_addbrightLocation = gl.getUniformLocation(program, "value_addbright");
+
 uneditedLocation = gl.getUniformLocation(program, "unedited");
 colorLocation = gl.getUniformLocation(program, "color");
 
@@ -219,7 +232,13 @@ function updateImage(askTime){
 
   // set uniforms
   gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-  gl.uniform3f(slider_rgbLocation, document.getElementById('slider_r').getAttribute('value'), document.getElementById('slider_g').getAttribute('value'), document.getElementById('slider_b').getAttribute('value'));
+
+  gl.uniform1f(slider_lightnesscontrastLocation, document.getElementById('slider_lightnesscontrast').getAttribute('value'));
+  gl.uniform1f(slider_regularcontrastLocation, document.getElementById('slider_regularcontrast').getAttribute('value'));
+  gl.uniform1f(slider_multbrightLocation, document.getElementById('slider_multbright').getAttribute('value'));
+  gl.uniform1f(slider_addbrightLocation, document.getElementById('slider_addbright').getAttribute('value'));
+
+
   gl.uniform1f(uneditedLocation, unedited);
   gl.uniform1f(colorLocation, color);
 
@@ -247,6 +266,7 @@ function updateImage(askTime){
 
 
 }
+
 
 module.exports.openImageDialog = function(filetype){
   console.log("should open " + filetype + " file");

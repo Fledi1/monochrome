@@ -30,53 +30,50 @@
           <!--Sidebar-->
           <!--Accordion-->
           <div class="panel-group" id="accordion">
-            <!--Contrast-->
+            <!--Tonality-->
             <div class="panel panel-default">
               <div class="panel-heading" id="topHeading" data-toggle="collapse" data-parent="#accordion" href="#collapse1">
                 <h4 class="panel-title">
-                  <a class="accordionheader">Contrast</a>
+                  <a class="accordionheader">Tonality</a>
                 </h4>
               </div>
               <div id="collapse1" class="panel-collapse collapse">
                 <div class="panel-body">
-                  <prop-slider id="slider_r" type="Contrast" min="-255" max="255" step="0.1" initvalue="0" value="0.0"></prop-slider>
+                  <b>Contrast</b>
+                  <prop-slider id="slider_lightnesscontrast" type="Lightness" min="-255" max="255" step="0.1" initvalue="0" value="0.0"></prop-slider>
+                  <prop-slider id="slider_regularcontrast" type="Complete" min="-255" max="255" step="0.1" initvalue="0" value="0.0"></prop-slider>
+                  <b>Brightness</b>
+                  <prop-slider id="slider_multbright" type="Multiplicative" min="0" max="200" step="0.01" initvalue="100" value="0.0"></prop-slider>
+                  <prop-slider id="slider_addbright" type="Additive" min="-1" max="1" step="0.01" initvalue="0" value="0.0"></prop-slider>
                 </div>
               </div>
             </div>
-            <!--End Contrast-->
-            <!--Add Brightness-->
+            <!--End Tonality-->
+            <!--Add Color-->
             <div class="panel panel-default">
               <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse2">
                 <h4 class="panel-title">
-                  <a class="accordionheader">Multiplicative Brightness</a>
+                  <a class="accordionheader">Color</a>
                 </h4>
               </div>
               <div id="collapse2" class="panel-collapse collapse">
                 <div class="panel-body">
-                  <prop-slider id="slider_g" type="Brightness" min="-255" max="255" step="0.01" initvalue="0" value="0.0"></prop-slider>
+                  <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-primary" data-toggle="popover" data-content="Uses normal color information"
+                            onclick="setColor(true);" oncontextmenu="setElementPopover(this,true);">Color</button>
+
+                    <button type="button" class="btn btn-primary" data-toggle="popover" data-content="Uses black and white conversion"
+                            onclick="setColor(false);" oncontextmenu="setElementPopover(this,true);">Monochrome</button>
+                  </div>
                 </div>
               </div>
             </div>
-            <!--End Add Brightness-->
-            <!--Mult Brightness-->
-            <div class="panel panel-default">
-              <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                <h4 class="panel-title">
-                  <a class="accordionheader">Additive Brightness</a>
-                </h4>
-              </div>
-              <div id="collapse3" class="panel-collapse collapse">
-                <div class="panel-body">
-                  <prop-slider id="slider_b" type="Brightness" min="-1" max="1" step="0.01" initvalue="0" value="0.0"></prop-slider>
-                </div>
-              </div>
-            </div>
-            <!--End Mult Brightness-->
+            <!--End Color-->
             <!--I/O-->
             <div class="panel panel-default">
               <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse4">
                 <h4 class="panel-title">
-                  <a class="accordionheader">I/O</a>
+                  <a class="accordionheader">Open / Save</a>
                 </h4>
               </div>
               <div id="collapse4" class="panel-collapse collapse">
@@ -125,13 +122,6 @@
                 <button type="button" class="btn btn-default" onclick="setUnedited(false);">Edited</button>
               </div>
               <br><br>
-              <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-default" data-toggle="popover" data-content="Uses normal color information"
-                        onclick="setColor(true);" oncontextmenu="setElementPopover(this,true);">Color</button>
-
-                <button type="button" class="btn btn-default" data-toggle="popover" data-content="Uses black and white conversion"
-                        onclick="setColor(false);" oncontextmenu="setElementPopover(this,true);">Monochrome</button>
-              </div>
 
               <!--End Sidebar-->
         </div>
