@@ -36,10 +36,18 @@ var texture;
 //Uniform loactions
 var resolutionLocation;
 
+
 var slider_lightnesscontrastLocation;
+
 var slider_regularcontrastLocation;
+
 var slider_multbrightLocation;
+var slider_multbright_topLocation;
+var slider_multbright_midLocation;
+var slider_multbright_botLocation;
+
 var slider_addbrightLocation;
+
 
 
 var uneditedLocation;
@@ -167,6 +175,10 @@ resolutionLocation = gl.getUniformLocation(program, "u_resolution");
 slider_lightnesscontrastLocation = gl.getUniformLocation(program, "value_lightnesscontrast");
 slider_regularcontrastLocation = gl.getUniformLocation(program, "value_regularcontrast");
 slider_multbrightLocation = gl.getUniformLocation(program, "value_multbright");
+slider_multbright_topLocation = gl.getUniformLocation(program, "value_multbright_top");
+slider_multbright_midLocation = gl.getUniformLocation(program, "value_multbright_mid");
+slider_multbright_botLocation = gl.getUniformLocation(program, "value_multbright_bot");
+
 slider_addbrightLocation = gl.getUniformLocation(program, "value_addbright");
 
 uneditedLocation = gl.getUniformLocation(program, "unedited");
@@ -236,6 +248,10 @@ function updateImage(askTime){
   gl.uniform1f(slider_lightnesscontrastLocation, document.getElementById('slider_lightnesscontrast').getAttribute('value'));
   gl.uniform1f(slider_regularcontrastLocation, document.getElementById('slider_regularcontrast').getAttribute('value'));
   gl.uniform1f(slider_multbrightLocation, document.getElementById('slider_multbright').getAttribute('value'));
+  gl.uniform1f(slider_multbright_topLocation, document.getElementById('slider_multbright_top').getAttribute('value'));
+  gl.uniform1f(slider_multbright_midLocation, document.getElementById('slider_multbright_mid').getAttribute('value'));
+  gl.uniform1f(slider_multbright_botLocation, document.getElementById('slider_multbright_bot').getAttribute('value'));
+
   gl.uniform1f(slider_addbrightLocation, document.getElementById('slider_addbright').getAttribute('value'));
 
 

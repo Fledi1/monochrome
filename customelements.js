@@ -10,6 +10,7 @@ connectedCallback() {
 
   var conflu = document.createElement('div');
   //conflu.className = 'container-fluid';
+  conflu.style.margin = this.getAttribute('margin');
   this.appendChild(conflu);
 
   var row = document.createElement('div');

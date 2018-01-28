@@ -8,6 +8,9 @@ uniform sampler2D u_image;
 uniform float value_lightnesscontrast;
 uniform float value_regularcontrast;
 uniform float value_multbright;
+uniform float value_multbright_top;
+uniform float value_multbright_mid;
+uniform float value_multbright_bot;
 uniform float value_addbright;
 
 uniform bool unedited;
@@ -18,7 +21,7 @@ varying vec2 v_texCoord;
 void regularContrast(inout float var, float value);
 void lightnessContrast(inout vec4 var, float value);
 void addBrightness(inout float var, float value);
-void multBrightness(inout float var, float value);
+void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd);
 void RGBtoHSV(inout vec4 var);
 void HSVtoRGB(inout vec4 var);
 
@@ -31,10 +34,24 @@ void main() {
    regularContrast(col.r, value_regularcontrast);
    regularContrast(col.g, value_regularcontrast);
    regularContrast(col.b, value_regularcontrast);
+   //Multiplicative Brightness Complete
+   multBrightness(col.r, incol.r, value_multbright/100.0, 0.0,  1.0);
+   multBrightness(col.g, incol.g, value_multbright/100.0, 0.0, 1.0);
+   multBrightness(col.b, incol.b, value_multbright/100.0, 0.0, 1.0);
+   //Multiplicative Brightness Highlights
+   multBrightness(col.r, incol.r, value_multbright_top/100.0, 0.66, 1.0);
+   multBrightness(col.g, incol.g, value_multbright_top/100.0, 0.66, 1.0);
+   multBrightness(col.b, incol.b, value_multbright_top/100.0, 0.66, 1.0);
+   //Multiplicative Brightness Midtones
+   multBrightness(col.r, incol.r, value_multbright_mid/100.0, 0.33, 0.66);
+   multBrightness(col.g, incol.g, value_multbright_mid/100.0, 0.33, 0.66);
+   multBrightness(col.b, incol.b, value_multbright_mid/100.0, 0.33, 0.66);
+   //Multiplicative Brightness Shadows
+   multBrightness(col.r, incol.r, value_multbright_bot/100.0, 0.0, 0.33);
+   multBrightness(col.g, incol.g, value_multbright_bot/100.0, 0.0, 0.33);
+   multBrightness(col.b, incol.b, value_multbright_bot/100.0, 0.0, 0.33);
 
-   multBrightness(col.r, value_multbright/100.0);
-   multBrightness(col.g, value_multbright/100.0);
-   multBrightness(col.b, value_multbright/100.0);
+
 
    addBrightness(col.r, value_addbright);
    addBrightness(col.g, value_addbright);
@@ -72,8 +89,10 @@ void regularContrast(inout float var, float value){
 void addBrightness(inout float var, float value){
   var += value;
 }
-void multBrightness(inout float var, float value){
-  var *= value;
+void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd){
+  if(lowEnd <= compVar && compVar <= highEnd ){
+    var *= value;
+  }
 }
 
 //Color space conversions
