@@ -12,6 +12,8 @@ uniform float value_multbright_top;
 uniform float value_multbright_mid;
 uniform float value_multbright_bot;
 uniform float value_addbright;
+uniform float value_sat_contrast;
+uniform float value_hueshift;
 
 uniform bool unedited;
 uniform bool color;
@@ -20,6 +22,7 @@ varying vec2 v_texCoord;
 
 void regularContrast(inout float var, float value);
 void lightnessContrast(inout vec4 var, float value);
+void saturationContrast(inout vec4 var, float value);
 void addBrightness(inout float var, float value);
 void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd);
 void RGBtoHSV(inout vec4 var);
@@ -29,29 +32,33 @@ void main() {
    vec4 incol = texture2D(u_image, v_texCoord).rgba;
    vec4 col = incol;
 
+   RGBtoHSV(col);
+   RGBtoHSV(incol);
+
    lightnessContrast(col,value_lightnesscontrast);
+
+   saturationContrast(col,value_sat_contrast);
+
+   //Multiplicative Brightness Complete
+   multBrightness(col.z, incol.z, value_multbright/100.0, 0.0,  1.0);
+
+   //Multiplicative Brightness Highlights
+   multBrightness(col.z, incol.z, value_multbright_top/100.0, 0.66, 1.0);
+
+   //Multiplicative Brightness Midtones
+   multBrightness(col.z, incol.z, value_multbright_mid/100.0, 0.33, 0.66);
+
+   //Multiplicative Brightness Shadows
+   multBrightness(col.z, incol.z, value_multbright_bot/100.0, 0.0, 0.33);
+
+   col.x += value_hueshift;
+
+   HSVtoRGB(col);
+   HSVtoRGB(incol);
 
    regularContrast(col.r, value_regularcontrast);
    regularContrast(col.g, value_regularcontrast);
    regularContrast(col.b, value_regularcontrast);
-   //Multiplicative Brightness Complete
-   multBrightness(col.r, incol.r, value_multbright/100.0, 0.0,  1.0);
-   multBrightness(col.g, incol.g, value_multbright/100.0, 0.0, 1.0);
-   multBrightness(col.b, incol.b, value_multbright/100.0, 0.0, 1.0);
-   //Multiplicative Brightness Highlights
-   multBrightness(col.r, incol.r, value_multbright_top/100.0, 0.66, 1.0);
-   multBrightness(col.g, incol.g, value_multbright_top/100.0, 0.66, 1.0);
-   multBrightness(col.b, incol.b, value_multbright_top/100.0, 0.66, 1.0);
-   //Multiplicative Brightness Midtones
-   multBrightness(col.r, incol.r, value_multbright_mid/100.0, 0.33, 0.66);
-   multBrightness(col.g, incol.g, value_multbright_mid/100.0, 0.33, 0.66);
-   multBrightness(col.b, incol.b, value_multbright_mid/100.0, 0.33, 0.66);
-   //Multiplicative Brightness Shadows
-   multBrightness(col.r, incol.r, value_multbright_bot/100.0, 0.0, 0.33);
-   multBrightness(col.g, incol.g, value_multbright_bot/100.0, 0.0, 0.33);
-   multBrightness(col.b, incol.b, value_multbright_bot/100.0, 0.0, 0.33);
-
-
 
    addBrightness(col.r, value_addbright);
    addBrightness(col.g, value_addbright);
@@ -77,23 +84,45 @@ void main() {
 
 }
 
+//HSV
 void lightnessContrast(inout vec4 var, float value){
-  RGBtoHSV(var);
   var.z = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var.z*255.0) - 128.0  ) + 128.0 )/255.0;
-  HSVtoRGB(var);
 }
 
+void saturationContrast(inout vec4 var, float value){
+  var.y = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var.y*255.0) - 128.0  ) + 128.0 )/255.0;
+}
+
+//RGB
 void regularContrast(inout float var, float value){
   var = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var*255.0) - 128.0  ) + 128.0 )/255.0;
 }
+
+//Single Channel
 void addBrightness(inout float var, float value){
   var += value;
 }
+
 void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd){
-  if(lowEnd <= compVar && compVar <= highEnd ){
-    var *= value;
+  float diff = var*value - var;
+
+  // if(lowEnd <= compVar && compVar <= highEnd ){
+  //   var *= value;
+  // }
+  //if(!(compVar >= lowEnd && compVaw <= highEnd))
+  //If compvar is lower than lowEnd
+  if(compVar <= lowEnd && compVar >= lowEnd-0.1){
+    float d = (pow(0.1-abs(compVar-lowEnd),2.0))*10.0;
+    diff *= d;
+  }//If compar is higher than highEnd
+  else if (compVar >= highEnd && compVar <= highEnd+0.1){
+    float d = (pow(0.1-abs(compVar-highEnd),2.0))*10.0;
+    diff *= d;
   }
+
+  var = var += diff;
 }
+
 
 //Color space conversions
 void RGBtoHSV(inout vec4 var){
@@ -128,6 +157,7 @@ void RGBtoHSV(inout vec4 var){
 
 void HSVtoRGB(inout vec4 var){
   //https://www.rapidtables.com/convert/color/hsv-to-rgb.html
+  var.x = mod(var.x,360.0);
   float c = var.z * var.y;
   float x = c*(1.0-abs(mod(var.x/60.0,2.0)-1.0));
   float m = var.z -c;
