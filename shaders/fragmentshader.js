@@ -12,6 +12,8 @@ uniform float value_multbright_top;
 uniform float value_multbright_mid;
 uniform float value_multbright_bot;
 uniform float value_addbright;
+uniform float value_vibrance;
+uniform float value_saturation;
 uniform float value_sat_contrast;
 uniform float value_hueshift;
 
@@ -23,6 +25,8 @@ varying vec2 v_texCoord;
 void regularContrast(inout float var, float value);
 void lightnessContrast(inout vec4 var, float value);
 void saturationContrast(inout vec4 var, float value);
+void addSaturation(inout vec4 var, float value);
+void addVibrance(inout vec4 var, float compVar, float value);
 void addBrightness(inout float var, float value);
 void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd);
 void RGBtoHSV(inout vec4 var);
@@ -38,6 +42,10 @@ void main() {
    lightnessContrast(col,value_lightnesscontrast);
 
    saturationContrast(col,value_sat_contrast);
+
+   addSaturation(col,value_saturation/100.0);
+
+   addVibrance(col, incol.z, value_vibrance/100.0);
 
    //Multiplicative Brightness Complete
    multBrightness(col.z, incol.z, value_multbright/100.0, 0.0,  1.0);
@@ -93,6 +101,21 @@ void saturationContrast(inout vec4 var, float value){
   var.y = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var.y*255.0) - 128.0  ) + 128.0 )/255.0;
 }
 
+void addSaturation(inout vec4 var, float value){
+  var.y *= value;
+}
+
+void addVibrance(inout vec4 var, float compVar, float value){
+  float diff = (var.y * value) - var.y;
+  if(compVar < 0.35 && compVar >= 0.0){
+    var += diff*(0.35-abs(0.35-compVar))*(1.0/0.35);
+  }else if(compVar > 0.65 && compVar <= 100.0){
+    var += diff*(0.35-abs(compVar-0.65))*(1.0/0.35);
+  }else{
+    var += diff;
+  }
+}
+
 //RGB
 void regularContrast(inout float var, float value){
   var = (  ( (259.0 * (value + 255.0)) / (255.0 * (259.0 - value)) ) * ( (var*255.0) - 128.0  ) + 128.0 )/255.0;
@@ -127,6 +150,26 @@ void multBrightness(inout float var, float compVar, float value, float lowEnd, f
 //Color space conversions
 void RGBtoHSV(inout vec4 var){
   //https://www.rapidtables.com/convert/color/rgb-to-hsv.html
+  //Truncate Values
+  if(var.x < 0.0){
+    var.x = 0.0;
+  }
+  if(var.x > 1.0){
+    var.x = 1.0;
+  }
+  if(var.y < 0.0){
+    var.y = 0.0;
+  }
+  if(var.y > 1.0){
+    var.y = 1.0;
+  }
+  if(var.z < 0.0){
+    var.z = 0.0;
+  }
+  if(var.z > 1.0){
+    var.z = 1.0;
+  }
+
   float cmax = max(var.x,max(var.y,var.z));
   float cmin = min(var.x,min(var.y,var.z));
   float delta = cmax - cmin;
@@ -157,7 +200,21 @@ void RGBtoHSV(inout vec4 var){
 
 void HSVtoRGB(inout vec4 var){
   //https://www.rapidtables.com/convert/color/hsv-to-rgb.html
+  //Truncate Values
   var.x = mod(var.x,360.0);
+  if(var.y < 0.0){
+    var.y = 0.0;
+  }
+  if(var.y > 100.0){
+    var.y = 100.0;
+  }
+  if(var.z < 0.0){
+    var.z = 0.0;
+  }
+  if(var.z > 100.0){
+    var.z = 100.0;
+  }
+
   float c = var.z * var.y;
   float x = c*(1.0-abs(mod(var.x/60.0,2.0)-1.0));
   float m = var.z -c;

@@ -21,7 +21,7 @@ var currentImagePath = "image";
 
 
 var unedited = false;
-var color = false;
+var color = true;
 
 var gl;
 var program;
@@ -48,6 +48,8 @@ var slider_multbright_botLocation;
 
 var slider_addbrightLocation;
 
+var slider_saturationLocation;
+var slider_vibranceLocation;
 var slider_sat_contrastLocation;
 
 var slider_hueshiftLocation;
@@ -183,6 +185,8 @@ slider_multbright_botLocation = gl.getUniformLocation(program, "value_multbright
 
 slider_addbrightLocation = gl.getUniformLocation(program, "value_addbright");
 
+slider_vibranceLocation = gl.getUniformLocation(program, "value_vibrance");
+slider_saturationLocation = gl.getUniformLocation(program, "value_saturation");
 slider_sat_contrastLocation = gl.getUniformLocation(program, "value_sat_contrast");
 
 slider_hueshiftLocation = gl.getUniformLocation(program, "value_hueshift");
@@ -260,6 +264,8 @@ function updateImage(askTime){
 
   gl.uniform1f(slider_addbrightLocation, document.getElementById('slider_addbright').getAttribute('value'));
 
+  gl.uniform1f(slider_vibranceLocation, document.getElementById('slider_vibrance').getAttribute('value'));
+  gl.uniform1f(slider_saturationLocation, document.getElementById('slider_saturation').getAttribute('value'));
   gl.uniform1f(slider_sat_contrastLocation, document.getElementById('slider_sat_contrast').getAttribute('value'));
 
   gl.uniform1f(slider_hueshiftLocation, document.getElementById('slider_hueshift').getAttribute('value'));
