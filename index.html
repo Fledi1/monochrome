@@ -11,6 +11,7 @@
     <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="./node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script type="text/javascript" src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- <script type="text/javascript" src="./node_modules/histogram-canvas/dist/histogram-canvas.min.js"></script> -->
 
     <script>if (window.module) module = window.module;</script>
 
@@ -21,7 +22,7 @@
       const renderer = require('./renderer.js')
     </script>
   </head>
-  <body id="body">
+  <body id="body" onload="renderer.initHistogram();">
 
 
     <div id="container" class="container-fluid">
@@ -30,9 +31,46 @@
           <!--Sidebar-->
           <!--Accordion-->
           <div class="panel-group" id="accordion">
+            <!-- Histogram -->
+            <div class="panel panel-default">
+              <div class="panel-heading" id="topHeading">
+                <h4 class="panel-title">
+                  <a class="accordionheader">Monochrome</a>
+                </h4>
+              </div>
+              <div class="panel-body">
+                <canvas id="canvas_histogram" height="120rem"></canvas>
+                <svg id="canvas_histogram_footer" height="2rem">
+                  <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:rgb(0,0,0);stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100%" height="1.6vw" fill="url(#grad1)"/>
+                </svg>
+
+                <canvas id="canvas_colorhistogram" height="120rem"></canvas>
+                <svg id="canvas_colorhistogram_footer" height="2rem">
+                  <defs>
+                    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+                      <stop offset="16.66%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+                      <stop offset="33.33%" style="stop-color:rgb(0,255,0);stop-opacity:1" />
+                      <stop offset="50%" style="stop-color:rgb(0,255,255);stop-opacity:1" />
+                      <stop offset="66.66%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
+                      <stop offset="83.33%" style="stop-color:rgb(255,0,255);stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100%" height="1.6vw" fill="url(#grad2)"/>
+                </svg>
+              </div>
+            </div>
+            <!-- End Histogram -->
             <!--Tonality-->
             <div class="panel panel-default">
-              <div class="panel-heading" id="topHeading" data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+              <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapse1">
                 <h4 class="panel-title">
                   <a class="accordionheader">Tonality</a>
                 </h4>
@@ -144,7 +182,6 @@
         <div id="mainwindow" class="col-9">
           <!--Main Window-->
           <div class="page-header">
-            <h1 class="text-capitalize">Monochrome</h1>
           </div>
 
           <canvas id="canvas"></canvas>

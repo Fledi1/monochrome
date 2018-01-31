@@ -9,6 +9,8 @@ const frags = require('./shaders/fragmentshader.js');
 const fs = require('fs');
 const canvasBuffer = require('electron-canvas-to-buffer');
 
+const HistogramCanvas = require('histogram-canvas');
+
 const dcraw = require('dcraw');
 
 const {decode} = require('decode-tiff');
@@ -19,6 +21,10 @@ const dialog = remote.dialog;
 
 var currentImagePath = "image";
 
+let canvas_histogram;
+let histogram;
+let canvas_colorhistogram;
+let colorhistogram;
 
 var unedited = false;
 var color = true;
@@ -111,7 +117,7 @@ canvas.width = image.width;
 canvas.height = image.height;
 
 gl = canvas.getContext("webgl", {
-  preserveDrawingBuffer: true,
+  preserveDrawingBuffer: false,
   antialias: true
 });
 if (!gl) {
@@ -279,7 +285,10 @@ function updateImage(askTime){
   var offset = 0;
   var count = 6;
   gl.drawArrays(primitiveType, offset, count);
-  }
+
+  //Update Histogram
+  updateHistogram();
+}
 
   function setRectangle(gl, x, y, width, height) {
   var x1 = x;
@@ -294,10 +303,74 @@ function updateImage(askTime){
      x2, y1,
      x2, y2,
   ]), gl.STATIC_DRAW);
-
-
 }
 
+function updateHistogram(){
+
+  let _canvas = document.createElement('canvas');
+  let _ctx = _canvas.getContext('2d');
+
+  _ctx.scale(0.1,0.1);
+  _ctx.drawImage(gl.canvas,0,0);
+
+  let hist = new Uint8Array(256);
+  //let colhist = new Uint8Array(360);
+
+  for (var i = 0; i < 360; i++) {
+    if(i < 256){hist[i] = 0}
+    //colhist[i] = 0;
+  }
+
+  //let imageData = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+  //gl.readPixels(0,0,gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+
+  let imageData = _ctx.getImageData(0,0,_canvas.width,_canvas.height).data;
+
+  for (var i = 0; i < imageData.length; i += 64) {
+    //hist[Math.max(imageData[i],imageData[i+1],imageData[i+2])]++;
+    hist[Math.round((imageData[i]+imageData[i+1]+imageData[i+2])/3)]++;
+    //let hue = 0;
+
+    //let cmax = Math.max(imageData[i],imageData[i+1],imageData[i+2]);
+    //let delta = cmax - Math.min(imageData[i],imageData[i+1],imageData[i+2]);
+
+    //Hue
+    /*if(delta == 0.0){
+      hue = 0.0;
+    }else if (cmax == imageData[i]){
+      hue = 60.0 * (((imageData[i+1]-imageData[i+2])/delta)%6.0);
+    }else if (cmax == imageData[i+1]){
+      hue = 60.0 * ((imageData[i+2]-imageData[i])/delta+2.0);
+    }else if (cmax == imageData[i+2]){
+      hue = 60.0 * ((imageData[i]-imageData[i+1])/delta+4.0);
+    }*/
+    //colhist[/*hue*/0]++;
+  }
+
+  console.log(imageData);
+  //console.log(colhist)
+
+  let data = {red:Array.from(hist),green:[0],blue:[0]};
+  //let coldata = {red:Array.from(colhist),green:[0],blue:[0]}
+  histogram.update(data);
+  //colorhistogram.update(coldata);
+}
+
+function initHistogram(){
+  canvas_histogram = document.getElementById('canvas_histogram');
+  canvas_colorhistogram = document.getElementById('canvas_colorhistogram');
+
+  histogram = new HistogramCanvas(canvas_histogram,{green:false,blue:false,redColor:'#FFFFFF'});
+  colorhistogram = new HistogramCanvas(canvas_colorhistogram,{green:false,blue:false,redColor:'#FFFFFF'});
+
+  let data = {red:[1,1,1],green:[0],blue:[0]};
+  histogram.update(data);
+  colorhistogram.update(data);
+}
+
+module.exports.initHistogram = function(){
+  initHistogram();
+}
 
 module.exports.openImageDialog = function(filetype){
   console.log("should open " + filetype + " file");

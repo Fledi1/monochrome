@@ -87,8 +87,24 @@ html, body, #container, .row {
   resize: horizontal;
 }
 
-#mainwindow {
+#canvas_histogram {
+  width: 100%;
+  background-color: #6A6A6A;
+  /* border: 3.5px #333333 solid; */
+}
 
+#canvas_histogram_footer {
+  width: 100%;
+}
+
+#canvas_colorhistogram {
+  width: 100%;
+  background-color: #6A6A6A;
+  /* border: 3.5px #333333 solid; */
+}
+
+#canvas_colorhistogram_footer {
+  width: 100%;
 }
 
 #canvas {
