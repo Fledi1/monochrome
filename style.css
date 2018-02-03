@@ -84,7 +84,12 @@ html, body, #container, .row {
   height: 100%;
   width: 25%;
   /*min-width: 350px;*/
-  resize: horizontal;
+  /*resize: horizontal;*/
+  overflow-y: scroll;
+}
+
+#mainwindow {
+  padding: 20px;
 }
 
 #canvas_histogram {
@@ -95,6 +100,7 @@ html, body, #container, .row {
 
 #canvas_histogram_footer {
   width: 100%;
+  height: 1.6vw;
 }
 
 #canvas_colorhistogram {
@@ -105,10 +111,15 @@ html, body, #container, .row {
 
 #canvas_colorhistogram_footer {
   width: 100%;
+  height: 1.6vw;
 }
 
 #canvas {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
   /*image-rendering: smooth;
   /*border: 20px solid #FFFFFF;*/
 }

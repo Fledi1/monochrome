@@ -307,53 +307,77 @@ function updateImage(askTime){
 
 function updateHistogram(){
 
-  let _canvas = document.createElement('canvas');
-  let _ctx = _canvas.getContext('2d');
-
-  _ctx.scale(0.1,0.1);
-  _ctx.drawImage(gl.canvas,0,0);
-
   let hist = new Uint8Array(256);
-  //let colhist = new Uint8Array(360);
+  let colhist = new Uint8Array(360);
 
   for (var i = 0; i < 360; i++) {
     if(i < 256){hist[i] = 0}
-    //colhist[i] = 0;
+    colhist[i] = 0;
   }
 
   //let imageData = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
   //gl.readPixels(0,0,gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
-  let imageData = _ctx.getImageData(0,0,_canvas.width,_canvas.height).data;
-
-  for (var i = 0; i < imageData.length; i += 64) {
+  //let imageData = _ctx.getImageData(0,0,_canvas.width,_canvas.height).data;
+  let stepSize = Math.floor((gl.drawingBufferWidth*gl.drawingBufferHeight)/512);
+  console.log(stepSize);
+  for (var i = 0; i < gl.drawingBufferWidth*gl.drawingBufferHeight; i += stepSize) {
+    let pixel = new Uint8Array(4);
+    gl.readPixels(i%gl.drawingBufferWidth,Math.floor(i/gl.drawingBufferWidth),1,1,gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+    let red = pixel[0];
+    let green = pixel[1];
+    let blue = pixel[2];
     //hist[Math.max(imageData[i],imageData[i+1],imageData[i+2])]++;
-    hist[Math.round((imageData[i]+imageData[i+1]+imageData[i+2])/3)]++;
-    //let hue = 0;
+    //hist[Math.round((imageData[i]+imageData[i+1]+imageData[i+2])/3)]++;
+    hist[Math.round((red+green+blue)/3)]++;
 
-    //let cmax = Math.max(imageData[i],imageData[i+1],imageData[i+2]);
-    //let delta = cmax - Math.min(imageData[i],imageData[i+1],imageData[i+2]);
+    let hue = 0;
+
+    // let cmax = Math.max(imageData[i],imageData[i+1],imageData[i+2]);
+    // let delta = cmax - Math.min(imageData[i],imageData[i+1],imageData[i+2]);
+    //
+    // //Hue
+    // if(delta == 0.0){
+    //   hue = 0.0;
+    // }else if (cmax == imageData[i]){
+    //   hue = 60.0 * (((imageData[i+1]-imageData[i+2])/delta)%6.0);
+    // }else if (cmax == imageData[i+1]){
+    //   hue = 60.0 * ((imageData[i+2]-imageData[i])/delta+2.0);
+    // }else if (cmax == imageData[i+2]){
+    //   hue = 60.0 * ((imageData[i]-imageData[i+1])/delta+4.0);
+    // }
+    let cmax = Math.max(red,green,blue);
+    let delta = cmax - Math.min(red,green,blue);
 
     //Hue
-    /*if(delta == 0.0){
+    if(delta == 0.0){
       hue = 0.0;
-    }else if (cmax == imageData[i]){
-      hue = 60.0 * (((imageData[i+1]-imageData[i+2])/delta)%6.0);
-    }else if (cmax == imageData[i+1]){
-      hue = 60.0 * ((imageData[i+2]-imageData[i])/delta+2.0);
-    }else if (cmax == imageData[i+2]){
-      hue = 60.0 * ((imageData[i]-imageData[i+1])/delta+4.0);
-    }*/
-    //colhist[/*hue*/0]++;
+    }else if (cmax == red){
+      hue = 60.0 * (((green-blue)/delta)%6.0);
+    }else if (cmax == green){
+      hue = 60.0 * ((blue-red)/delta+2.0);
+    }else if (cmax == blue){
+      hue = 60.0 * ((red-green)/delta+4.0);
+    }
+    colhist[hue]++;
+  }
+  //smooth Histogram
+  for(let j = 0; j < 1; j++){
+    for(let i = 1; i < colhist.length-1; i++){
+      if(i < hist.length-1){
+        hist[i] = Math.round((hist[i-1]+hist[i]+hist[i+1])/3);
+      }
+      colhist[i] = Math.round((colhist[i-1]+colhist[i]+colhist[i+1])/3);
+    }
   }
 
-  console.log(imageData);
+  //console.log(imageData);
   //console.log(colhist)
 
   let data = {red:Array.from(hist),green:[0],blue:[0]};
-  //let coldata = {red:Array.from(colhist),green:[0],blue:[0]}
+  let coldata = {red:Array.from(colhist),green:[0],blue:[0]}
   histogram.update(data);
-  //colorhistogram.update(coldata);
+  colorhistogram.update(coldata);
 }
 
 function initHistogram(){
