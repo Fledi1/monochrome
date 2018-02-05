@@ -29,6 +29,10 @@ html, body, #container, .row {
   height: 12vh;
 }
 
+.shadow {
+  box-shadow: 0.3rem 0.3rem 1.1rem -0.3rem rgba(0,0,0,0.35);
+}
+
 .dropdown.show {
   position: absolute;
   z-index: 10;
@@ -77,6 +81,9 @@ html, body, #container, .row {
   color: #333333;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
 
 #sidebar {
   background-color: #333333;
@@ -100,7 +107,7 @@ html, body, #container, .row {
 
 #canvas_histogram_footer {
   width: 100%;
-  height: 1.6vw;
+  height: 0.8vw;
 }
 
 #canvas_colorhistogram {
@@ -111,7 +118,7 @@ html, body, #container, .row {
 
 #canvas_colorhistogram_footer {
   width: 100%;
-  height: 1.6vw;
+  height: 0.8vw;
 }
 
 #canvas {
@@ -120,6 +127,8 @@ html, body, #container, .row {
   margin-left: auto;
   margin-right: auto;
   display: block;
+  box-shadow: 0.5rem 0.5rem 4rem -0.3rem rgba(0,0,0,0.35);
+  border: 5px black solid;
   /*image-rendering: smooth;
   /*border: 20px solid #FFFFFF;*/
 }

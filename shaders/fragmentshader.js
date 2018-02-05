@@ -28,7 +28,8 @@ void saturationContrast(inout vec4 var, float value);
 void addSaturation(inout vec4 var, float value);
 void addVibrance(inout vec4 var, float compVar, float value);
 void addBrightness(inout float var, float value);
-void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd);
+//void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd);
+void multBrightness(inout float var, float compVar, float value, float center);
 void RGBtoHSV(inout vec4 var);
 void HSVtoRGB(inout vec4 var);
 
@@ -48,16 +49,16 @@ void main() {
    addVibrance(col, incol.z, value_vibrance/100.0);
 
    //Multiplicative Brightness Complete
-   multBrightness(col.z, incol.z, value_multbright/100.0, 0.0,  1.0);
+   multBrightness(col.z, incol.z, value_multbright/100.0, 1.0);
 
    //Multiplicative Brightness Highlights
-   multBrightness(col.z, incol.z, value_multbright_top/100.0, 0.66, 1.0);
+   multBrightness(col.z, incol.z, value_multbright_top/100.0, 1.0);
 
    //Multiplicative Brightness Midtones
-   multBrightness(col.z, incol.z, value_multbright_mid/100.0, 0.33, 0.66);
+   multBrightness(col.z, incol.z, value_multbright_mid/100.0, 0.5);
 
    //Multiplicative Brightness Shadows
-   multBrightness(col.z, incol.z, value_multbright_bot/100.0, 0.0, 0.33);
+   multBrightness(col.z, incol.z, value_multbright_bot/100.0, 0.0);
 
    col.x += value_hueshift;
 
@@ -126,24 +127,34 @@ void addBrightness(inout float var, float value){
   var += value;
 }
 
-void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd){
+// void multBrightness(inout float var, float compVar, float value, float lowEnd, float highEnd){
+//   float diff = var*value - var;
+//   float smoothWidth = 0.2;
+//   // if(lowEnd <= compVar && compVar <= highEnd ){
+//   //   var *= value;
+//   // }
+//   //if(!(compVar >= lowEnd && compVaw <= highEnd))
+//   //If compvar is lower than lowEnd
+//   if(compVar <= lowEnd && compVar >= lowEnd-smoothWidth){
+//     float d = (pow(smoothWidth-abs(compVar-lowEnd),2.0))*10.0;
+//     diff *= d;
+//   }//If compar is higher than highEnd
+//   else if (compVar >= highEnd && compVar <= highEnd+smoothWidth){
+//     float d = (pow(smoothWidth-abs(compVar-highEnd),2.0))*10.0;
+//     diff *= d;
+//   }else {
+//     diff = 0.0;
+//   }
+//
+//   var = var + diff;
+// }
+
+void multBrightness(inout float var, float compVar, float value, float center){
   float diff = var*value - var;
 
-  // if(lowEnd <= compVar && compVar <= highEnd ){
-  //   var *= value;
-  // }
-  //if(!(compVar >= lowEnd && compVaw <= highEnd))
-  //If compvar is lower than lowEnd
-  if(compVar <= lowEnd && compVar >= lowEnd-0.1){
-    float d = (pow(0.1-abs(compVar-lowEnd),2.0))*10.0;
-    diff *= d;
-  }//If compar is higher than highEnd
-  else if (compVar >= highEnd && compVar <= highEnd+0.1){
-    float d = (pow(0.1-abs(compVar-highEnd),2.0))*10.0;
-    diff *= d;
-  }
+  float dist = 1.0-abs(center-compVar);
 
-  var = var += diff;
+  var = var + diff*dist;
 }
 
 

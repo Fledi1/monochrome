@@ -27,7 +27,7 @@
 
     <div id="container" class="container-fluid">
       <div class="row">
-        <div id="sidebar" class="col-3#">
+        <div id="sidebar" class="col-3">
           <!--Sidebar-->
           <!--Accordion-->
           <div class="panel-group" id="accordion">
@@ -39,19 +39,19 @@
                 </h4>
               </div>
               <div class="panel-body">
-                <canvas id="canvas_histogram" height="120rem"></canvas>
-                <svg id="canvas_histogram_footer" height="2rem">
+                <canvas class="shadow" id="canvas_histogram" height="80rem"></canvas>
+                <svg class="shadow" id="canvas_histogram_footer" height="0.6rem">
                   <defs>
                     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" style="stop-color:rgb(0,0,0);stop-opacity:1" />
                       <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
                     </linearGradient>
                   </defs>
-                  <rect width="100%" height="1.6vw" fill="url(#grad1)"/>
+                  <rect width="100%" height="0.8vw" fill="url(#grad1)"/>
                 </svg>
 
-                <canvas id="canvas_colorhistogram" height="120rem"></canvas>
-                <svg id="canvas_colorhistogram_footer" height="2rem">
+                <canvas class="shadow" id="canvas_colorhistogram" height="80rem"></canvas>
+                <svg class="shadow" id="canvas_colorhistogram_footer" height="0.6rem">
                   <defs>
                     <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
@@ -63,7 +63,7 @@
                       <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
                     </linearGradient>
                   </defs>
-                  <rect width="100%" height="1.6vw" fill="url(#grad2)"/>
+                  <rect width="100%" height="0.8vw" fill="url(#grad2)"/>
                 </svg>
               </div>
             </div>
@@ -181,7 +181,7 @@
         </div>
         <div id="mainwindow" class="col-9">
           <!--Main Window-->
-          <canvas id="canvas"></canvas>
+          <canvas class="bigshadow" id="canvas"></canvas>
           <!--End Main Window-->
 
         </div>

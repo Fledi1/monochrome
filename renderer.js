@@ -362,7 +362,7 @@ function updateHistogram(){
     colhist[hue]++;
   }
   //smooth Histogram
-  for(let j = 0; j < 1; j++){
+  for(let j = 0; j < 0; j++){
     for(let i = 1; i < colhist.length-1; i++){
       if(i < hist.length-1){
         hist[i] = Math.round((hist[i-1]+hist[i]+hist[i+1])/3);
